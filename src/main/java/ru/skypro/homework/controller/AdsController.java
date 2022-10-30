@@ -19,7 +19,7 @@ import ru.skypro.homework.dto.*;
 public class AdsController {
 
     @Operation(
-            summary = "getALLAds",
+            summary = "getALLAds", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = ResponseWrapperAdsDto.class))),
@@ -36,7 +36,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "addAds",
+            summary = "addAds", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = AdsDto.class))),
@@ -54,7 +54,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "removeAds/{id}",
+            summary = "removeAds/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = AdsDto.class))),
@@ -72,7 +72,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getAds/{id}",
+            summary = "getAds/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = FullAdsDto.class))),
@@ -90,7 +90,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "updateAds/{id}",
+            summary = "updateAds/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = AdsDto.class))),
@@ -108,7 +108,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "getAds/me",
+            summary = "getAds/me", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = ResponseWrapperAdsDto.class))),
@@ -131,7 +131,7 @@ public class AdsController {
     }
 
     @Operation(
-            summary = "/ads/{ad_pk}/comment",
+            summary = "/ads/{ad_pk}/comment", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = ResponseWrapperAdsCommentDto.class))),
@@ -149,7 +149,7 @@ public class AdsController {
         return ResponseEntity.ok(new ResponseWrapperAdsCommentDto());
     }
 
-    @Operation(summary = "/ads/{ad_pk}/comment",
+    @Operation(summary = "/ads/{ad_pk}/comment", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = AdsCommentDto.class))),
@@ -168,7 +168,7 @@ public class AdsController {
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
-    @Operation(summary = "/ads/{ad_pk}/comment/{id}",
+    @Operation(summary = "/ads/{ad_pk}/comment/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "204", description = "No Content"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),
@@ -184,7 +184,7 @@ public class AdsController {
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
-    @Operation(summary = "/ads/{ad_pk}/comment/{id}",
+    @Operation(summary = "/ads/{ad_pk}/comment/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "204", description = "No Content"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),
@@ -201,7 +201,7 @@ public class AdsController {
         return ResponseEntity.status(204).build();
     }
 
-    @Operation(summary = "/ads/{ad_pk}/comment/{id}",
+    @Operation(summary = "/ads/{ad_pk}/comment/{id}", description = "", tags={ "Объявления" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),

@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "updateUser",
+            summary = "updateUser", description = "", tags={ "Пользователи" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = UserDto.class))),
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "set_password",
+            summary = "set_password", description = "", tags={ "Пользователи" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = NewPasswordDto.class))),
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "getUser/{id}",
+            summary = "getUser/{id}", description = "", tags={ "Пользователи" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = UserDto.class))),
