@@ -4,29 +4,29 @@
 
 CREATE TABLE IF NOT EXISTS users
 (
-    user_id   SERIAL PRIMARY KEY,
-    user_first_name VARCHAR (30) NOT NULL,
-    user_last_name VARCHAR (30) NOT NULL,
-    user_phone VARCHAR(20) NOT NULL,
-    user_email VARCHAR (30) UNIQUE NOT NULL,
-    user_password VARCHAR (150) NOT NULL,
-    user_role VARCHAR (10) NOT NULL
+    id   SERIAL PRIMARY KEY,
+    first_name VARCHAR (30) NOT NULL,
+    last_name VARCHAR (30) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR (30) UNIQUE NOT NULL,
+    password VARCHAR (150) NOT NULL,
+    role VARCHAR (10) NOT NULL
     );
 CREATE TABLE IF NOT EXISTS ads
 (
-    ads_id  SERIAL PRIMARY KEY,
-    ads_author_id BIGINT REFERENCES users (user_id),
-    ads_image VARCHAR (250),
-    ads_title VARCHAR (100) NOT NULL,
-    ads_description TEXT,
-    ads_price INTEGER NOT NULL
+    id  SERIAL PRIMARY KEY,
+    author_id BIGINT REFERENCES users (user_id),
+    image VARCHAR (250),
+    title VARCHAR (100) NOT NULL,
+    description TEXT,
+    price INTEGER NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS comment
 (
-    comment_id   SERIAL PRIMARY KEY,
+    id   SERIAL PRIMARY KEY,
     author_id BIGINT REFERENCES users (user_id),
     ads_id BIGINT REFERENCES ads (ads_id),
     comment_created TIMESTAMP NOT NULL,
-    comment_text TEXT NOT NULL
+    text TEXT NOT NULL
     );

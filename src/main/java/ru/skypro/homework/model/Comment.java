@@ -7,28 +7,22 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Setter
-@Getter
-@ToString
+@Data
 @EqualsAndHashCode
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "comment")
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
     private Long id;
-
-    @Column(name = "author_id")
     private Integer author;
-
-    @Column(name = "comment_create")
     private LocalDateTime createdAt;
-
-    @Column(name = "comment_text")
     private String text;
-
-    @Column(name = "ads_id")
     private Long adsId;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private Users users;
 }
