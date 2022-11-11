@@ -16,7 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findByCreatedAtBefore(LocalDateTime dateTime);
     List<Comment> findByCreatedAtAfter(LocalDateTime dateTime);
     List<Comment> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
-    List<Comment> findByCreatedAt_Date(LocalDate date);
     List<Comment> findByTextContains(String partOfText);
     List<Comment> findByAdsId(Long adsId);
 
