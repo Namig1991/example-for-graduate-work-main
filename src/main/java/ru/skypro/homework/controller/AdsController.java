@@ -31,7 +31,6 @@ public class AdsController {
 
     @GetMapping
     public ResponseEntity<ResponseWrapperAdsDto> getALLAds(){
-        log.info("Метод показа всех объявялений.");
         return ResponseEntity.ok(new ResponseWrapperAdsDto());
     }
 
@@ -49,7 +48,6 @@ public class AdsController {
     @PostMapping
     public ResponseEntity<CreateAdsDto> addAds(
             @Parameter(description = "Передаем заполненное объявление") @RequestBody AdsDto adsDto ){
-        log.info("Метод сохраняет новое объявление.");
         return ResponseEntity.ok(new CreateAdsDto());
     }
 
@@ -67,7 +65,6 @@ public class AdsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<AdsDto> removeAds(
             @Parameter(description = "Пердает ID для удаления") @PathVariable Integer id) {
-        log.info("Метод удаления объявления по переданному ID");
         return ResponseEntity.status(204).build();
     }
 
@@ -85,7 +82,6 @@ public class AdsController {
     @GetMapping("/{id}")
     public ResponseEntity<FullAdsDto> getAds(
             @Parameter(description = "Передаем ID объявления") @PathVariable Integer id){
-        log.info("Метод возвращает объявление по ID");
         return ResponseEntity.ok(new FullAdsDto());
     }
 
@@ -103,7 +99,6 @@ public class AdsController {
     @PatchMapping("/{id}")
     public ResponseEntity<AdsDto> updateAds(
             @Parameter(description = "Передаем ID щбъявления") @PathVariable Integer id, @RequestBody AdsDto adsDto){
-        log.info("Метод изменения объявления.");
         return ResponseEntity.ok(new AdsDto());
     }
 
@@ -126,7 +121,6 @@ public class AdsController {
             @Parameter(description = "details") @RequestParam(required = false) Object details,
             @Parameter(description = "principal") @RequestParam(required = false) Object principal
     ) {
-        log.info("Метод получения объявлений определенного пользователя.");
         return ResponseEntity.ok(new ResponseWrapperAdsDto());
     }
 
@@ -145,7 +139,6 @@ public class AdsController {
     public ResponseEntity<ResponseWrapperAdsCommentDto> getAdsComments(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk) {
-        log.info("Метод получения всех комментариев по первичному ключу.");
         return ResponseEntity.ok(new ResponseWrapperAdsCommentDto());
     }
 
@@ -164,7 +157,6 @@ public class AdsController {
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk
     ) {
-        log.info("Метод добавляет новый комментарий.");
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
@@ -180,7 +172,6 @@ public class AdsController {
             @PathVariable Integer id,
             @RequestBody AdsCommentDto adsCommentDto
     ) {
-        log.info("Метод изменения комментария.");
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
@@ -197,7 +188,6 @@ public class AdsController {
             @PathVariable Integer adsPk,
             @Parameter(description = "Передаем ID комментария")
             @PathVariable Integer id) {
-        log.info("Метод удаляет комментарий.");
         return ResponseEntity.status(204).build();
     }
 
@@ -214,7 +204,6 @@ public class AdsController {
             @PathVariable Integer adsPk,
             @Parameter(description = "Передаем ID комментария")
             @PathVariable Integer id) {
-        log.info("Метод получения комментария по ID");
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
