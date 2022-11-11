@@ -35,7 +35,6 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperUserDto> getUsers(){
-        log.info("Метод выводит всех пользователей.");
         return ResponseEntity.ok(new ResponseWrapperUserDto());
     }
 
@@ -52,7 +51,6 @@ public class UserController {
 
     @PatchMapping("/me")
     public ResponseEntity<UserDto> updateUser(){
-        log.info("Метод обновляет существующего пользователя.");
         return ResponseEntity.ok(new UserDto());
     }
 
@@ -69,7 +67,6 @@ public class UserController {
 
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDto> setPassword(){
-        log.info("Метод устанавливает новый пароль пользователя.");
         return ResponseEntity.ok(new NewPasswordDto());
     }
 
@@ -86,7 +83,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Integer id){
-        log.info("Метод возвращает пользователя по ID");
         return ResponseEntity.ok(new UserDto());
     }
 

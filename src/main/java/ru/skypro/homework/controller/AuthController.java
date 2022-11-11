@@ -10,18 +10,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.LoginReqDto;
 import ru.skypro.homework.dto.RegisterReqDto;
-import ru.skypro.homework.dto.RoleDto;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
 
-import static ru.skypro.homework.dto.RoleDto.USER;
+import static ru.skypro.homework.dto.Role.USER;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReqDto req) {
@@ -34,12 +36,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterReqDto req) {
-        RoleDto roleDto = req.getRoleDto() == null ? USER : req.getRoleDto();
-        if (authService.register(req, roleDto)) {
+        Role role = req.getRole() == null ? USER : req.getRole();
+        if (authService.register(req, role)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
 }
