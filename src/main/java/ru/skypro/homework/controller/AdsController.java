@@ -7,9 +7,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -45,9 +50,12 @@ public class AdsController {
             }
     )
 
-    @PostMapping
-    public ResponseEntity<CreateAdsDto> addAds(
-            @Parameter(description = "Передаем заполненное объявление") @RequestBody AdsDto adsDto ){
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreateAdsDto> addAds(@Valid
+            @Parameter(description = "Передаем заполненное объявление")
+            @RequestPart AdsDto adsDto,
+            @Parameter(description = "Передаем изображение к объявлению")
+            @RequestPart(required = false, value = "Image")MultipartFile file){
         return ResponseEntity.ok(new CreateAdsDto());
     }
 
@@ -98,7 +106,9 @@ public class AdsController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<AdsDto> updateAds(
-            @Parameter(description = "Передаем ID щбъявления") @PathVariable Integer id, @RequestBody AdsDto adsDto){
+            @Parameter(description = "Передаем ID объявления")
+            @PathVariable Integer id,
+            @RequestBody AdsDto adsDto){
         return ResponseEntity.ok(new AdsDto());
     }
 
@@ -207,5 +217,25 @@ public class AdsController {
         return ResponseEntity.ok(new AdsCommentDto());
     }
 
+    @Operation(
+            summary = "updateAdsImage", description = "", tags={ "Объявления" },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(schema = @Schema(implementation = AdsDto.class))),
+                    @ApiResponse(responseCode = "204", description = "No Content"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorised"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            }
+    )
+
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateAdsImage(
+            @Parameter(description = "Передаем ID объявления")
+            @PathVariable Integer id,
+            @RequestParam Authentication authentication,
+            @Parameter(description = "Передаем новое изображение")
+            @RequestPart(value = "Image") @Valid MultipartFile image){
+        return ResponseEntity.ok().body("Изображение успешно обновлено.");
+    }
 
 }
