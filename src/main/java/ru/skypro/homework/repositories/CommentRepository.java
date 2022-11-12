@@ -10,13 +10,4 @@ import java.util.Date;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
-
-    List<Comment> findByUsers(Users author);
-    List<Comment> findByCreatedAt(LocalDateTime dateTime);
-    List<Comment> findByCreatedAtBefore(LocalDateTime dateTime);
-    List<Comment> findByCreatedAtAfter(LocalDateTime dateTime);
-    List<Comment> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
-    List<Comment> findByTextContains(String partOfText);
-    List<Comment> findByAdsId(Long adsId);
-
 }
