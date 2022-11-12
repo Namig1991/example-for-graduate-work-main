@@ -232,7 +232,7 @@ public class AdsController {
     public ResponseEntity<String> updateAdsImage(
             @Parameter(description = "Передаем ID объявления")
             @PathVariable Integer id,
-            @RequestParam Authentication authentication,
+            @RequestBody Authentication authentication,
             @Parameter(description = "Передаем новое изображение")
             @RequestPart(value = "Image") @Valid MultipartFile image){
         return ResponseEntity.ok().body("Изображение успешно обновлено.");
