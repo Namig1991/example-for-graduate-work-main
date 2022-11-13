@@ -51,12 +51,12 @@ public class AdsController {
     )
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CreateAdsDto> addAds(@Valid
+    public ResponseEntity<AdsDto> addAds(@Valid
             @Parameter(description = "Передаем заполненное объявление")
-            @RequestPart AdsDto adsDto,
+            @RequestPart (name = "properties") CreateAdsDto createAdsDto,
             @Parameter(description = "Передаем изображение к объявлению")
-            @RequestPart(required = false, value = "Image")MultipartFile file){
-        return ResponseEntity.ok(new CreateAdsDto());
+            @RequestPart("image")MultipartFile file){
+        return ResponseEntity.ok(new AdsDto());
     }
 
     @Operation(
@@ -234,7 +234,7 @@ public class AdsController {
             @PathVariable Integer id,
             @RequestBody Authentication authentication,
             @Parameter(description = "Передаем новое изображение")
-            @RequestPart(value = "Image") @Valid MultipartFile image){
+            @RequestPart(value = "image") @Valid MultipartFile image){
         return ResponseEntity.ok().body("Изображение успешно обновлено.");
     }
 
