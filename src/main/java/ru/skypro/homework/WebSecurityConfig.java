@@ -7,12 +7,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import java.util.Collection;
+import java.util.HashSet;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class WebSecurityConfig {
-
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -20,7 +21,6 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login", "/register"
     };
-
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
@@ -28,7 +28,15 @@ public class WebSecurityConfig {
                 .password("password")
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+        UserDetails admin = User.withDefaultPasswordEncoder()
+                .username("estonec@gmail.com")
+                .password("password")
+                .roles("ADMIN")
+                .build();
+        Collection<UserDetails> users = new HashSet<>();
+        users.add(user);
+        users.add(admin);
+        return new InMemoryUserDetailsManager(users);
     }
 
     @Bean
@@ -38,14 +46,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) ->
                         authz
                                 .mvcMatchers(AUTH_WHITELIST).permitAll()
-                                //.mvcMatchers("/ads/**", "/users/**").authenticated()
+                                .mvcMatchers("/ads/**", "/users/**").authenticated()
 
                 )
                 .cors().disable()
                 .httpBasic(withDefaults());
         return http.build();
     }
-
-
 }
 
