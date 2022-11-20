@@ -38,7 +38,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReqDto req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Регистрация прошла успешно!");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

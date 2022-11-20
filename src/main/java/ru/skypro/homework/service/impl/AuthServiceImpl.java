@@ -1,5 +1,6 @@
 package ru.skypro.homework.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,7 +9,11 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterReqDto;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.model.Users;
+import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AuthService;
+
+import static ru.skypro.homework.dto.Role.USER;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -17,8 +22,11 @@ public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder encoder;
 
-    public AuthServiceImpl(UserDetailsManager manager) {
+    private final UserRepository userRepository;
+
+    public AuthServiceImpl(UserDetailsManager manager, UserRepository userRepository) {
         this.manager = manager;
+        this.userRepository = userRepository;
         this.encoder = new BCryptPasswordEncoder();
     }
 
@@ -45,6 +53,12 @@ public class AuthServiceImpl implements AuthService {
                         .roles(role.name())
                         .build()
         );
+        Users newUser = userRepository.findByUsername(registerReqDto.getUsername());
+        newUser.setFirstName(registerReqDto.getFirstName());
+        newUser.setLastName(registerReqDto.getLastName());
+        newUser.setPhone(registerReqDto.getPhone());
+        newUser.setRole(role);
+        userRepository.save(newUser);
         return true;
     }
 }

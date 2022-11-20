@@ -15,7 +15,7 @@ public interface UsersMapper {
 
     Users userDtoToUser (UserDto userDto);
 
-    @Mapping(target = "email", source = "username")
+
     Users registerReqDtoToUser(RegisterReqDto registerReqDto);
 
     List<UserDto> listUsersToListUserDto(List<Users> usersList);

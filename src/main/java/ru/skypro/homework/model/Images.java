@@ -17,8 +17,8 @@ public class Images {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Lob
-    private byte[] photo;
+//    @Lob
+//    private byte[] photo;
     private String mediaType;
     private String filePath;
     private Long fileSize;

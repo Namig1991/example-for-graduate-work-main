@@ -13,15 +13,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.AdsService;
 
 import javax.validation.Valid;
 
+/**
+ * Контррллер для работы с объявлениями.
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 public class AdsController {
+
+    private final AdsService adsService;
 
     @Operation(
             summary = "getALLAds", description = "", tags={ "Объявления" },
@@ -39,6 +45,11 @@ public class AdsController {
         return ResponseEntity.ok(new ResponseWrapperAdsDto());
     }
 
+    /**
+     * Добавление нового объявления.
+     * @param createAdsDto - входная форма.
+     * @param file - изображение к объвлению.
+     */
     @Operation(
             summary = "addAds", description = "", tags={ "Объявления" },
             responses = {
@@ -56,7 +67,7 @@ public class AdsController {
             @RequestPart (name = "properties") CreateAdsDto createAdsDto,
             @Parameter(description = "Передаем изображение к объявлению")
             @RequestPart("image")MultipartFile file){
-        return ResponseEntity.ok(new AdsDto());
+        return adsService.saveAds(createAdsDto, file);
     }
 
     @Operation(

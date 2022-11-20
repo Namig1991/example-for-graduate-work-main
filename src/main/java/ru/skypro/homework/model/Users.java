@@ -16,10 +16,11 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+    private String username;
     private String firstName;
     private String lastName;
     private String phone;
     private Role role;
     private String password;
+    private Boolean enabled;
 }
