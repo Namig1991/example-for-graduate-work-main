@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.ResponseWrapperUserDto;
@@ -33,6 +34,8 @@ public class UserController {
 
             @ApiResponse(responseCode = "404", description = "Not Found") })
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperUserDto> getUsers(){
         return ResponseEntity.ok(new ResponseWrapperUserDto());
@@ -49,6 +52,7 @@ public class UserController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/me")
     public ResponseEntity<UserDto> updateUser(){
         return ResponseEntity.ok(new UserDto());
@@ -65,6 +69,7 @@ public class UserController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDto> setPassword(){
         return ResponseEntity.ok(new NewPasswordDto());
@@ -81,6 +86,7 @@ public class UserController {
             }
     )
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Integer id){
         return ResponseEntity.ok(new UserDto());

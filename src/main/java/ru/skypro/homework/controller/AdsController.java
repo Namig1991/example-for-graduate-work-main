@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +51,7 @@ public class AdsController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDto> addAds(@Valid
             @Parameter(description = "Передаем заполненное объявление")
@@ -70,6 +72,7 @@ public class AdsController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<AdsDto> removeAds(
             @Parameter(description = "Пердает ID для удаления") @PathVariable Integer id) {
@@ -87,6 +90,7 @@ public class AdsController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<FullAdsDto> getAds(
             @Parameter(description = "Передаем ID объявления") @PathVariable Integer id){
@@ -104,6 +108,7 @@ public class AdsController {
             }
     )
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<AdsDto> updateAds(
             @Parameter(description = "Передаем ID объявления")
@@ -134,6 +139,7 @@ public class AdsController {
         return ResponseEntity.ok(new ResponseWrapperAdsDto());
     }
 
+
     @Operation(
             summary = "/ads/{ad_pk}/comment", description = "", tags={ "Объявления" },
             responses = {
@@ -144,7 +150,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
-
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{adsPk}/comment")
     public ResponseEntity<ResponseWrapperAdsCommentDto> getAdsComments(
             @Parameter(description = "Передаем первичный ключ обявления")
@@ -160,6 +166,8 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/{adsPk}/comment")
     public ResponseEntity<AdsCommentDto> addAdsComment(
             @Parameter(description = "Передаем заполненный комментарий")
@@ -176,6 +184,8 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             })
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/{adsPk}/comment/{id}")
     public ResponseEntity<AdsCommentDto> updateAdsComment(
             @PathVariable Integer adsPk,
@@ -192,6 +202,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             })
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{adsPk}/comment/{id}")
     public ResponseEntity<Void> deleteAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
@@ -208,6 +219,8 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{adsPk}/comment/{id}")
     public ResponseEntity<AdsCommentDto> getAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
