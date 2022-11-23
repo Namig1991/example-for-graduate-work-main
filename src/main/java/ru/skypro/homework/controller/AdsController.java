@@ -7,15 +7,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.model.Images;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.impl.AdsServiceImpl;
+import ru.skypro.homework.service.impl.ImageService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Контррллер для работы с объявлениями.
@@ -27,7 +38,9 @@ import javax.validation.Valid;
 @RequestMapping("/ads")
 public class AdsController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdsController.class);
     private final AdsService adsService;
+    private final ImageService imageService;
 
     @Operation(
             summary = "getALLAds", description = "", tags={ "Объявления" },
@@ -66,7 +79,8 @@ public class AdsController {
             @Parameter(description = "Передаем заполненное объявление")
             @RequestPart (name = "properties") CreateAdsDto createAdsDto,
             @Parameter(description = "Передаем изображение к объявлению")
-            @RequestPart("image")MultipartFile file){
+            @RequestPart("image")MultipartFile file) throws IOException {
+        LOGGER.info("Was invoked method of AdsController for save Ads.");
         return adsService.saveAds(createAdsDto, file);
     }
 
@@ -247,6 +261,31 @@ public class AdsController {
             @Parameter(description = "Передаем новое изображение")
             @RequestPart(value = "image") @Valid MultipartFile image){
         return ResponseEntity.ok().body("Изображение успешно обновлено.");
+    }
+
+    /**
+     * "Метод получения изображения по идентификатору.
+     */
+    @Operation(summary = "/ads/getImage/{imageId}",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
+    @GetMapping(value = "/getImage/{imageId}")
+    public void getImage(@PathVariable Long imageId, HttpServletResponse response) {
+        Images image = imageService.getImage(imageId);
+        Path path = Path.of(image.getFilePath());
+        try (
+                InputStream is = Files.newInputStream(path);
+                OutputStream os = response.getOutputStream()
+                ){
+            response.setStatus(200);
+            response.setContentType(image.getMediaType());
+            response.setContentLength(Math.toIntExact(image.getFileSize()));
+            is.transferTo(os);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

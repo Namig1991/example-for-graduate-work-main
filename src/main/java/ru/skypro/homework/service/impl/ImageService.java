@@ -34,14 +34,14 @@ public class ImageService {
     private ImageRepository imageRepository;
     private AdsRepository adsRepository;
 
-    public void uploadImage(Long adsId, MultipartFile file) throws IOException {
+    public Images uploadImage(Long adsId, MultipartFile file) throws IOException {
         LOGGER.info("Was invoked method for uploading image for Ads.");
         Images newImage = new Images();
         Ads ads = adsRepository.findById(adsId).orElseThrow();
         newImage.setAds(ads);
         String pathOfAds = imageDir + "/" + adsId;
         if (file != null) {
-            Path filePath = Path.of(imageDir, ads.getTitle() +
+            Path filePath = Path.of(pathOfAds, ads.getTitle() +
                     getImagesByAdsId(adsId).size() + "." +
                     getExtension(Objects.requireNonNull(file.getOriginalFilename())));
 
@@ -59,6 +59,7 @@ public class ImageService {
             newImage.setMediaType(file.getContentType());
             newImage.setFileSize(file.getSize());
         }
+        return imageRepository.save(newImage);
     }
 
     /**
@@ -75,5 +76,14 @@ public class ImageService {
      */
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    /**
+     * Поиск изображения по его идентификатору
+     * @param id - идентификатор изображения.
+     */
+    public Images getImage(Long id) {
+        LOGGER.info("Was invoked method for get image by Id.");
+        return imageRepository.findById(id).orElseThrow();
     }
 }
