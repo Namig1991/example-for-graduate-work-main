@@ -12,10 +12,11 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR (150) NOT NULL,
     role VARCHAR (10) NOT NULL
     );
+
 CREATE TABLE IF NOT EXISTS ads
 (
     id  SERIAL PRIMARY KEY,
-    author_id BIGINT REFERENCES users (user_id),
+    author_id BIGINT REFERENCES users (id),
     image VARCHAR (250),
     title VARCHAR (100) NOT NULL,
     description TEXT,

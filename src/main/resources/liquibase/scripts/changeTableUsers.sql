@@ -14,3 +14,13 @@ CREATE TABLE IF NOT EXIST authorities
     autority VARCHAR
 );
 
+-- changeset sli:3
+CREATE TABLE IF NOT EXIST images
+(
+    id BIGSERIAL PRIMARY KEY,
+    media_type VARCHAR,
+    file_path VARCHAR,
+    file_size VARCHAR,
+    ads_id BIGINT REFERENCES ads(id)
+)
+

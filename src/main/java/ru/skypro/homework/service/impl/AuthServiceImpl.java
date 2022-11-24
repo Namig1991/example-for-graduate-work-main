@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +11,6 @@ import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.model.Users;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AuthService;
-
-import static ru.skypro.homework.dto.Role.USER;
 
 @Service
 public class AuthServiceImpl implements AuthService {

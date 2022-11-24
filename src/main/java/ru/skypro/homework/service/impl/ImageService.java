@@ -11,18 +11,15 @@ import ru.skypro.homework.model.Images;
 import ru.skypro.homework.repositories.AdsRepository;
 import ru.skypro.homework.repositories.ImageRepository;
 
-import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Slf4j
-@Transactional
 public class ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
 
@@ -31,10 +28,15 @@ public class ImageService {
      */
     @Value("/marketPlace/images")
     private String imageDir;
-    private ImageRepository imageRepository;
-    private AdsRepository adsRepository;
+    private final ImageRepository imageRepository;
+    private final AdsRepository adsRepository;
 
-    public Images uploadImage(Long adsId, MultipartFile file) throws IOException {
+    public ImageService(ImageRepository imageRepository, AdsRepository adsRepository) {
+        this.imageRepository = imageRepository;
+        this.adsRepository = adsRepository;
+    }
+
+    public void uploadImage(Long adsId, MultipartFile file) throws IOException {
         LOGGER.info("Was invoked method for uploading image for Ads.");
         Images newImage = new Images();
         Ads ads = adsRepository.findById(adsId).orElseThrow();
@@ -42,7 +44,7 @@ public class ImageService {
         String pathOfAds = imageDir + "/" + adsId;
         if (file != null) {
             Path filePath = Path.of(pathOfAds, ads.getTitle() +
-                    getImagesByAdsId(adsId).size() + "." +
+                    getImagesByAdsId(adsId) + "." +
                     getExtension(Objects.requireNonNull(file.getOriginalFilename())));
 
             Files.createDirectories(filePath.getParent());
@@ -59,14 +61,14 @@ public class ImageService {
             newImage.setMediaType(file.getContentType());
             newImage.setFileSize(file.getSize());
         }
-        return imageRepository.save(newImage);
+        imageRepository.save(newImage);
     }
 
     /**
      * Поиск изображений по идентификатору объявления.
      * @param adsId - идентификатор объявления.
      */
-    private List<Images> getImagesByAdsId(Long adsId) {
+    private Images getImagesByAdsId(Long adsId) {
         Ads ads = adsRepository.findById(adsId).orElseThrow();
         return imageRepository.findByAds(ads);
     }
@@ -82,8 +84,18 @@ public class ImageService {
      * Поиск изображения по его идентификатору
      * @param id - идентификатор изображения.
      */
-    public Images getImage(Long id) {
+    public Images getImageById(Long id) {
         LOGGER.info("Was invoked method for get image by Id.");
         return imageRepository.findById(id).orElseThrow();
+    }
+
+    public Images getImagesByAds(Ads ads) {
+        LOGGER.info("Was invoked method for get images by Ads.");
+        return imageRepository.findByAds(ads);
+    }
+
+    public void removeImagesByAds(Ads ads) {
+        LOGGER.info("Was invoked method for delete images by Ads.");
+        imageRepository.deleteById(imageRepository.findByAds(ads).getId());
     }
 }

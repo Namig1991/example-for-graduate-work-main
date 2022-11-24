@@ -7,5 +7,7 @@ import ru.skypro.homework.model.Images;
 import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Images, Long> {
-    List<Images> findByAds(Ads ads);
+    Images findByAds(Ads ads);
+
+    void deleteByAds(Ads ads);
 }
