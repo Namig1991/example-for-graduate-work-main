@@ -3,7 +3,6 @@ package ru.skypro.homework.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,35 +14,40 @@ import ru.skypro.homework.dto.FullAdsDto;
 import ru.skypro.homework.dto.ResponseWrapperAdsDto;
 import ru.skypro.homework.mappers.AdsMapper;
 import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.model.Images;
 import ru.skypro.homework.model.Users;
 import ru.skypro.homework.repositories.AdsRepository;
+import ru.skypro.homework.repositories.CommentRepository;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.ImageService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
+@Transactional
 public class AdsServiceImpl implements AdsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsServiceImpl.class);
     private static final String END_POINT_FOR_IMAGE = "http://localhost:8080/ads/getImage/";
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
+    private final CommentRepository commentRepository;
     private final AdsMapper adsMapper;
 
     public AdsServiceImpl(AdsRepository adsRepository,
                           UserRepository userRepository,
                           ImageService imageService,
+                          CommentRepository commentRepository,
                           AdsMapper adsMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.imageService = imageService;
+        this.commentRepository = commentRepository;
         this.adsMapper = adsMapper;
     }
 
@@ -57,19 +61,16 @@ public class AdsServiceImpl implements AdsService {
     public ResponseEntity<AdsDto> saveAds(CreateAdsDto adsDto, MultipartFile file)
             throws IOException {
         LOGGER.info("Was invoked method for save Ads.");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Ads newAds = adsMapper.createAdsDtoToAds(adsDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users author = userRepository.findByUsername(authentication.getName());
         newAds.setUsers(author);
-        adsRepository.save(newAds);
-        Ads intermediateSavedAds = adsRepository.findByUsers(author).stream()
-                .max(Comparator.comparing(Ads::getId))
-                .orElseThrow();
+        Ads intermediateSavedAds = adsRepository.save(newAds);
         imageService.uploadImage(intermediateSavedAds.getId(), file);
         Images savedImage = imageService.getImagesByAds(intermediateSavedAds);
         intermediateSavedAds.setImage(END_POINT_FOR_IMAGE + savedImage.getId());
-        adsRepository.save(intermediateSavedAds);
-        AdsDto returnedAdsDto = adsMapper.toAdsDto(intermediateSavedAds);
+        Ads savedAds = adsRepository.save(intermediateSavedAds);
+        AdsDto returnedAdsDto = adsMapper.toAdsDto(savedAds);
         returnedAdsDto.setAuthor(Math.toIntExact(author.getId()));
         return ResponseEntity.ok(returnedAdsDto);
     }
@@ -97,16 +98,23 @@ public class AdsServiceImpl implements AdsService {
      * @return - удаленное объявление.
      */
     @Override
-    public ResponseEntity<AdsDto> removeAdsById(Long adsId) throws RuntimeException {
+    public ResponseEntity<AdsDto> removeAdsById(Long adsId) {
         LOGGER.info("Was invoked method for delete Ads by id.");
         Ads removedAds = adsRepository.findById(adsId).orElseThrow();
         imageService.removeImagesByAds(removedAds);
+        List<Comment> commentsOfAds = commentRepository.findByAds(removedAds);
+        commentRepository.deleteAll(commentsOfAds);
         adsRepository.deleteById(adsId);
         AdsDto removedAdsDto = adsMapper.toAdsDto(removedAds);
         removedAdsDto.setAuthor(Math.toIntExact(removedAds.getUsers().getId()));
         return ResponseEntity.ok(removedAdsDto);
     }
 
+    /**
+     * Получение объявления по его идентификатору.
+     * @param adsId - идентификатор объявления.
+     * @return - найденное объявление.
+     */
     @Override
     public ResponseEntity<FullAdsDto> getAdsById(Long adsId) {
         LOGGER.info("Was invoked method for get Ads by id.");
@@ -123,7 +131,7 @@ public class AdsServiceImpl implements AdsService {
      * @return - измененное объявление.
      */
     @Override
-    public ResponseEntity<AdsDto> updateAds(Long adsId, AdsDto adsDto) throws RuntimeException {
+    public ResponseEntity<AdsDto> updateAds(Long adsId, AdsDto adsDto) {
         LOGGER.info("Was invoked method for edit Ads.");
         Ads adsFromClient = adsMapper.toAds(adsDto);
         Ads adsFromDataBase = adsRepository.findById(adsId).orElseThrow();
@@ -134,6 +142,7 @@ public class AdsServiceImpl implements AdsService {
                 !(adsFromClient.getTitle().equals(adsFromDataBase.getTitle()))) {
             adsFromDataBase.setTitle(adsFromClient.getTitle());
         }
+        adsRepository.save(adsFromDataBase);
         AdsDto returnedAdsDto = adsMapper.toAdsDto(adsFromDataBase);
         returnedAdsDto.setAuthor(Math.toIntExact(adsFromDataBase.getUsers().getId()));
         return ResponseEntity.ok(returnedAdsDto);
@@ -146,7 +155,6 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseEntity<ResponseWrapperAdsDto> getAdsMe(Authentication authentication) {
         LOGGER.info("Was invoked method for get Ads by current user.");
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users author = userRepository.findByUsername(authentication.getName());
         List<Ads> adsList = adsRepository.findByUsers(author);
         List<AdsDto> adsDtoList = adsMapper.listAdsToListAdsDto(adsList);
@@ -157,5 +165,21 @@ public class AdsServiceImpl implements AdsService {
         responseWrapperAdsDto.setResults(adsDtoList);
         responseWrapperAdsDto.setCount(adsDtoList.size());
         return ResponseEntity.ok(responseWrapperAdsDto);
+    }
+
+    /**
+     * Обновление изображения к объявлению.
+     * @param adsId - идентификатор объявления.
+     * @param file - новое изображение.
+     */
+    @Override
+    public void updateAdsImage(Long adsId, MultipartFile file) throws IOException {
+        LOGGER.info("Was invoked method for update image of Ads.");
+        Ads updatedAds = adsRepository.findById(adsId).orElseThrow();
+        imageService.removeImagesByAds(updatedAds);
+        imageService.uploadImage(adsId, file);
+        Images savedImage = imageService.getImagesByAds(updatedAds);
+        updatedAds.setImage(END_POINT_FOR_IMAGE + savedImage.getId());
+        adsRepository.save(updatedAds);
     }
 }

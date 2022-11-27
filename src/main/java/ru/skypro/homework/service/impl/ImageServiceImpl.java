@@ -10,7 +10,9 @@ import ru.skypro.homework.model.Ads;
 import ru.skypro.homework.model.Images;
 import ru.skypro.homework.repositories.AdsRepository;
 import ru.skypro.homework.repositories.ImageRepository;
+import ru.skypro.homework.service.ImageService;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,8 +22,9 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Slf4j
-public class ImageService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
+@Transactional
+public class ImageServiceImpl implements ImageService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
     /**
      * Директорий, где будут храниться файлы с фотографиями.
@@ -31,7 +34,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final AdsRepository adsRepository;
 
-    public ImageService(ImageRepository imageRepository, AdsRepository adsRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository, AdsRepository adsRepository) {
         this.imageRepository = imageRepository;
         this.adsRepository = adsRepository;
     }
@@ -43,8 +46,7 @@ public class ImageService {
         newImage.setAds(ads);
         String pathOfAds = imageDir + "/" + adsId;
         if (file != null) {
-            Path filePath = Path.of(pathOfAds, ads.getTitle() +
-                    getImagesByAdsId(adsId) + "." +
+            Path filePath = Path.of(pathOfAds, ads.getTitle() + "." +
                     getExtension(Objects.requireNonNull(file.getOriginalFilename())));
 
             Files.createDirectories(filePath.getParent());

@@ -1,30 +1,27 @@
 package ru.skypro.homework.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-
 
 @Entity
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "comment")
-public class Comment {
-
+@Table(name = "avatars")
+public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdAt;
-    private String text;
+    private String mediaType;
+    private String filePath;
+    private Long fileSize;
 
-    @ManyToOne
-    @JoinColumn(name = "ads_id")
-    private Ads ads;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "users_id")
     private Users users;
 }

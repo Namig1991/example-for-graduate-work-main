@@ -19,4 +19,5 @@ public interface AdsService {
     ResponseEntity<FullAdsDto> getAdsById(Long adsId);
     ResponseEntity<AdsDto> updateAds(Long adsId, AdsDto adsDto);
     ResponseEntity<ResponseWrapperAdsDto> getAdsMe(Authentication authentication);
+    void updateAdsImage(Long adsId, MultipartFile file) throws IOException;
 }

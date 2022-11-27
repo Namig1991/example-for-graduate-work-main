@@ -16,9 +16,7 @@ import ru.skypro.homework.service.AuthService;
 public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsManager manager;
-
     private final PasswordEncoder encoder;
-
     private final UserRepository userRepository;
 
     public AuthServiceImpl(UserDetailsManager manager, UserRepository userRepository) {
@@ -39,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean register(RegisterReqDto registerReqDto, Role role) {
+    public boolean register(RegisterReqDto registerReqDto) {
         if (manager.userExists(registerReqDto.getUsername())) {
             return false;
         }
@@ -47,14 +45,14 @@ public class AuthServiceImpl implements AuthService {
                 User.withDefaultPasswordEncoder()
                         .password(registerReqDto.getPassword())
                         .username(registerReqDto.getUsername())
-                        .roles(role.name())
+                        .roles(registerReqDto.getRole().name())
                         .build()
         );
         Users newUser = userRepository.findByUsername(registerReqDto.getUsername());
         newUser.setFirstName(registerReqDto.getFirstName());
         newUser.setLastName(registerReqDto.getLastName());
         newUser.setPhone(registerReqDto.getPhone());
-        newUser.setRole(role);
+        newUser.setRole(registerReqDto.getRole());
         userRepository.save(newUser);
         return true;
     }

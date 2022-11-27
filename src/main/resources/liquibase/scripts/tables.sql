@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS ads
 
 CREATE TABLE IF NOT EXISTS comment
 (
-    id   SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     author_id BIGINT REFERENCES users (user_id),
     ads_id BIGINT REFERENCES ads (ads_id),
-    comment_created TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     text TEXT NOT NULL
     );
