@@ -198,7 +198,8 @@ public class AdsController {
      * @return - количество и список комментариев к объявлению.
      */
     @Operation(
-            summary = "/ads/{ad_pk}/comment", description = "", tags = {"Объявления"},
+            summary = "Получение всех комментариев объявления", description = "",
+            tags = {"Объявления"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
                             content = @Content(schema = @Schema(implementation = ResponseWrapperAdsCommentDto.class))),
@@ -247,7 +248,8 @@ public class AdsController {
      * @param adsCommentDto - изменения в комментарии.
      * @return - измененный комментарий.
      */
-    @Operation(summary = "/ads/{ad_pk}/comment/{id}", description = "", tags = {"Объявления"},
+    @Operation(summary = "Редактирование комментария текущим пользователем", description = "",
+            tags = {"Объявления"},
             responses = {
                     @ApiResponse(responseCode = "204", description = "No Content"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),

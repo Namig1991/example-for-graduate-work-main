@@ -49,7 +49,7 @@ public class UserController {
      * Получение списка всех пользователей.
      * @return - список всех пользователей.
      */
-    @Operation(summary = "getUsers", description = "", tags={ "Пользователи" })
+    @Operation(summary = "Получение всех пользователей", description = "", tags={ "Пользователи" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = "*/*",
@@ -60,7 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
 
             @ApiResponse(responseCode = "404", description = "Not Found") })
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperUserDto> getUsers(){
         return userService.getUsers();
