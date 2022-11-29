@@ -1,9 +1,6 @@
 package ru.skypro.homework.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -17,8 +14,11 @@ public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NonNull
     private String mediaType;
+    @NonNull
     private String filePath;
+    @NonNull
     private Long fileSize;
 
     @OneToOne

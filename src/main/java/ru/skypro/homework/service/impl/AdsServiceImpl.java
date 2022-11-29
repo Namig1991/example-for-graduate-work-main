@@ -22,6 +22,7 @@ import ru.skypro.homework.repositories.CommentRepository;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
+import ru.skypro.homework.service.UserService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -32,23 +33,25 @@ import java.util.List;
 @Transactional
 public class AdsServiceImpl implements AdsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsServiceImpl.class);
-    private static final String END_POINT_FOR_IMAGE = "http://localhost:8080/ads/getImage/";
+    private static final String END_POINT_FOR_IMAGE = "/getImage/";
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final CommentRepository commentRepository;
     private final AdsMapper adsMapper;
+    private final UserService userService;
 
     public AdsServiceImpl(AdsRepository adsRepository,
                           UserRepository userRepository,
                           ImageService imageService,
                           CommentRepository commentRepository,
-                          AdsMapper adsMapper) {
+                          AdsMapper adsMapper, UserService userService) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.imageService = imageService;
         this.commentRepository = commentRepository;
         this.adsMapper = adsMapper;
+        this.userService = userService;
     }
 
     /**
@@ -81,6 +84,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseEntity<ResponseWrapperAdsDto> getAllAds() {
         LOGGER.info("Was invoked method for get all Ads.");
+        userService.setAdminInUsers();
         List<Ads> adsList = adsRepository.findAll();
         List<AdsDto> adsDtoList = adsMapper.listAdsToListAdsDto(adsList);
         for (int i = 0; i < adsDtoList.size(); i++) {
@@ -180,6 +184,7 @@ public class AdsServiceImpl implements AdsService {
         imageService.uploadImage(adsId, file);
         Images savedImage = imageService.getImagesByAds(updatedAds);
         updatedAds.setImage(END_POINT_FOR_IMAGE + savedImage.getId());
+        updatedAds.setImages(savedImage);
         adsRepository.save(updatedAds);
     }
 }

@@ -5,5 +5,3 @@ databaseChangeLog:
       file: liquibase/scripts/changeTableUsers.sql
   - include:
       file: liquibase/scripts/createTableAvatar.sql
-  - include:
-      file: liquibase/scripts/insertAdminToUsers.sql

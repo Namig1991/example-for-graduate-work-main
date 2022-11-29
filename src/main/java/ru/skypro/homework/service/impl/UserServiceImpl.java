@@ -14,6 +14,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.ResponseWrapperUserDto;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.mappers.UsersMapper;
 import ru.skypro.homework.model.Users;
@@ -122,9 +123,26 @@ public class UserServiceImpl implements UserService {
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
         if (encoder.matches(newPasswordDto.getCurrentPassword(),
                 encryptedPasswordWithoutEncryptionType)) {
-            user.setPassword(encoder.encode(newPasswordDto.getNewPassword()));
+            user.setPassword("{bcrypt}" + encoder.encode(newPasswordDto.getNewPassword()));
             userRepository.save(user);
         }
         return ResponseEntity.ok(newPasswordDto);
+    }
+
+    @Override
+    public void setAdminInUsers() {
+        LOGGER.info("Was invoked method for set ADMIN.");
+        if (userRepository.findByRole(Role.ADMIN) == null) {
+            Users admin = new Users();
+            admin.setId(4L);
+            admin.setFirstName("Администратор");
+            admin.setLastName("Интернет-магазина");
+            admin.setPhone("+7(812)777-55-33");
+            admin.setUsername("admin@mail.ru");
+            admin.setPassword("{bcrypt}" + encoder.encode("Password2022"));
+            admin.setRole(Role.ADMIN);
+            admin.setEnabled(true);
+            userRepository.save(admin);
+        }
     }
 }

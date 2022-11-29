@@ -14,4 +14,5 @@ public interface UserService {
     ResponseEntity<ResponseWrapperUserDto> getUsers();
     ResponseEntity<UserDto> updateUser(UserDto userDto, Authentication authentication);
     ResponseEntity<NewPasswordDto> setPassword(NewPasswordDto newPasswordDto);
+    void setAdminInUsers();
 }

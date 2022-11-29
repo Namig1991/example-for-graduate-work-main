@@ -66,8 +66,10 @@ public class AvatarServiceImpl implements AvatarService {
                 bis.transferTo(bos);
             }
             avatar.setFilePath(filePath.toString());
-            avatar.setMediaType(file.getContentType());
+            avatar.setMediaType(Objects.requireNonNull(file.getContentType()));
             avatar.setFileSize(file.getSize());
+            user.setAvatar(avatar);
+            userRepository.save(user);
             return avatarRepository.save(avatar);
         }
         return null;

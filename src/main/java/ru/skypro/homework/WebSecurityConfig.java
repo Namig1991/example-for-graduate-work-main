@@ -34,6 +34,7 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable().authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/ads").permitAll()
+                .antMatchers(HttpMethod.GET, "/getImage/**").permitAll()
                 .mvcMatchers("/ads/**", "/users/**").authenticated()
                 .and().httpBasic(withDefaults());
         return http.build();

@@ -45,7 +45,6 @@ public class AdsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsController.class);
     private final AdsService adsService;
-    private final ImageService imageService;
     private final CommentService commentService;
 
     /**
@@ -347,32 +346,6 @@ public class AdsController {
         LOGGER.info("Was invoked method of AdsController for update image of Ads.");
         adsService.updateAdsImage(id.longValue(), image);
         return ResponseEntity.ok().body("Изображение успешно обновлено.");
-    }
-
-    /**
-     * "Метод получения изображения по идентификатору.
-     */
-    @Operation(summary = "/ads/getImage/{imageId}",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "404", description = "Not Found")
-            })
-    @GetMapping(value = "/getImage/{imageId}")
-    public void getImage(@PathVariable Long imageId, HttpServletResponse response) {
-        LOGGER.info("Was invoked method of AdsController for get image of Ads.");
-        Images image = imageService.getImageById(imageId);
-        Path path = Path.of(image.getFilePath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(image.getMediaType());
-            response.setContentLength(Math.toIntExact(image.getFileSize()));
-            is.transferTo(os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

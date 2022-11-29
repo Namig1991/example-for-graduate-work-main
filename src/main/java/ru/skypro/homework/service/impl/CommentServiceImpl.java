@@ -58,6 +58,9 @@ public class CommentServiceImpl implements CommentService {
         Users author = userRepository.findByUsername(authentication.getName());
         newComment.setUsers(author);
         Comment savedComment = commentRepository.save(newComment);
+        List<Comment> commentsOfAds = commentedAds.getComments();
+        commentsOfAds.add(savedComment);
+        commentedAds.setComments(commentsOfAds);
         AdsCommentDto returnedAdsCommentDto = commentMapper.toAdsCommentDto(savedComment);
         returnedAdsCommentDto.setAuthor(Math.toIntExact(author.getId()));
         return ResponseEntity.ok(returnedAdsCommentDto);
