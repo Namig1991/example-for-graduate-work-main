@@ -17,10 +17,14 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer author;
+    @NonNull
     private LocalDateTime createdAt;
+    @NonNull
     private String text;
-    private Long adsId;
+
+    @ManyToOne
+    @JoinColumn(name = "ads_id")
+    private Ads ads;
 
     @ManyToOne
     @JoinColumn(name = "users_id")

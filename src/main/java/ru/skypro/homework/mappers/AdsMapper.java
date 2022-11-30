@@ -25,6 +25,7 @@ public interface AdsMapper {
     @Mapping(target = "pk", source = "ads.id")
     @Mapping(target = "authorFirstName", source = "user.firstName")
     @Mapping(target = "authorLastName", source = "user.lastName")
+    @Mapping(target = "email", source = "user.username")
     FullAdsDto toFullAdsDto(Ads ads, Users user);
 
     List<AdsDto> listAdsToListAdsDto(List<Ads> adsList);

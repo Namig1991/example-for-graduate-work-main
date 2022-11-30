@@ -12,10 +12,11 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR (150) NOT NULL,
     role VARCHAR (10) NOT NULL
     );
+
 CREATE TABLE IF NOT EXISTS ads
 (
     id  SERIAL PRIMARY KEY,
-    author_id BIGINT REFERENCES users (user_id),
+    author_id BIGINT REFERENCES users (id),
     image VARCHAR (250),
     title VARCHAR (100) NOT NULL,
     description TEXT,
@@ -24,9 +25,9 @@ CREATE TABLE IF NOT EXISTS ads
 
 CREATE TABLE IF NOT EXISTS comment
 (
-    id   SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     author_id BIGINT REFERENCES users (user_id),
     ads_id BIGINT REFERENCES ads (ads_id),
-    comment_created TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     text TEXT NOT NULL
     );

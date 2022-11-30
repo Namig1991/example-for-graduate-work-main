@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class ResponseWrapperAdsCommentDto {
-  private Integer count = null;
-  private List<AdsCommentDto> results = null;
-
+  private Integer count;
+  private List<AdsCommentDto> results;
 }

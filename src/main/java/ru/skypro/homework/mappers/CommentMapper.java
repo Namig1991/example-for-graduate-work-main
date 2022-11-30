@@ -8,15 +8,15 @@ import ru.skypro.homework.model.Comment;
 
 import java.util.List;
 
-@Mapper(componentModel = "string")
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
 
     @Mapping(target = "pk", source = "id")
     AdsCommentDto toAdsCommentDto(Comment comment);
 
     @Mapping(target = "id",source = "pk")
-    Comment adsCommentDtoToComment(AdsCommentDto adsCommentDto);
+    Comment toComment(AdsCommentDto adsCommentDto);
 
-    List<AdsCommentDto> listCommentsToListAdsCommentDto(List<Comment> commentsList);
+    List<AdsCommentDto> toListAdsCommentDto(List<Comment> commentsList);
 
 }

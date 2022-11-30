@@ -9,8 +9,8 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class Images {
-
+@Table(name = "avatars")
+public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +22,6 @@ public class Images {
     private Long fileSize;
 
     @OneToOne
-    @JoinColumn(name = "ads_id")
-    private Ads ads;
+    @JoinColumn(name = "users_id")
+    private Users users;
 }
