@@ -84,7 +84,6 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseEntity<ResponseWrapperAdsDto> getAllAds() {
         LOGGER.info("Was invoked method for get all Ads.");
-        userService.setAdminInUsers();
         List<Ads> adsList = adsRepository.findAll();
         List<AdsDto> adsDtoList = adsMapper.listAdsToListAdsDto(adsList);
         for (int i = 0; i < adsDtoList.size(); i++) {

@@ -20,6 +20,7 @@ import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -51,6 +52,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseEntity<AdsCommentDto> addAdsComment(AdsCommentDto adsCommentDto, Long adsId) {
         LOGGER.info("Was invoked method for add comment for Ads.");
+        adsCommentDto.setCreatedAt(LocalDateTime.now());
         Comment newComment = commentMapper.toComment(adsCommentDto);
         Ads commentedAds = adsRepository.findById(adsId).orElseThrow();
         newComment.setAds(commentedAds);

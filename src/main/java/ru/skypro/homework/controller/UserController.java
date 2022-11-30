@@ -143,17 +143,17 @@ public class UserController {
         LOGGER.info("Was invoked method of UserController for update avatar of user.");
         Users user = userService.findByUsername(authentication.getName());
         Avatar avatar = avatarService.uploadAvatar(user.getId(), file);
-        Path path = Path.of(avatar.getFilePath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(avatar.getMediaType());
-            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
-            is.transferTo(os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        Path path = Path.of(avatar.getFilePath());
+//        try (
+//                InputStream is = Files.newInputStream(path);
+//                OutputStream os = response.getOutputStream()
+//        ) {
+//            response.setStatus(200);
+//            response.setContentType(avatar.getMediaType());
+//            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
+//            is.transferTo(os);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

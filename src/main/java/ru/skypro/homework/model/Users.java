@@ -40,4 +40,6 @@ public class Users {
     @OneToOne
     @JoinColumn(name = "avatar_id")
     private Avatar avatar;
+
+    private String image;
 }

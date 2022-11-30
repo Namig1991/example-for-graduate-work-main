@@ -110,7 +110,7 @@ public class AdsController {
             }
     )
     @PreAuthorize("@adsServiceImpl.getAdsById(#id).getBody().getEmail()" +
-            "== authentication.principal.username or hasRole('ROLE_ADMIN')")
+            "== authentication.principal.username or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<AdsDto> removeAds(
             @Parameter(description = "Передает ID для удаления")
@@ -207,7 +207,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
-    @GetMapping("/{adsPk}/comment")
+    @GetMapping("/{adsPk}/comments")
     public ResponseEntity<ResponseWrapperAdsCommentDto> getAllCommentsOfAds(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk) {
@@ -230,7 +230,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    @PostMapping("/{adsPk}/comment")
+    @PostMapping("/{adsPk}/comments")
     public ResponseEntity<AdsCommentDto> addAdsComment(
             @Parameter(description = "Передаем заполненный комментарий")
             @RequestBody AdsCommentDto adsCommentDto,
@@ -256,7 +256,7 @@ public class AdsController {
             })
     @PreAuthorize("@userServiceImpl.getUser(@commentServiceImpl.getAdsComment(#id).getBody()" +
             ".getAuthor()).body.email == authentication.principal.username or hasRole('ROLE_ADMIN')")
-    @PatchMapping("/{adsPk}/comment/{id}")
+    @PatchMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<AdsCommentDto> updateAdsComment(
             @PathVariable Integer adsPk,
             @PathVariable Integer id,
@@ -276,7 +276,7 @@ public class AdsController {
             })
     @PreAuthorize("@userServiceImpl.getUser(@commentServiceImpl.getAdsComment(#id).getBody()" +
             ".getAuthor()).body.email == authentication.principal.username or hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{adsPk}/comment/{id}")
+    @DeleteMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<Void> deleteAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk,
@@ -304,7 +304,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    @GetMapping("/{adsPk}/comment/{id}")
+    @GetMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<AdsCommentDto> getAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk,

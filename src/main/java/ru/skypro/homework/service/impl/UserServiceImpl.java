@@ -6,18 +6,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.ResponseWrapperUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.mappers.UsersMapper;
+import ru.skypro.homework.model.Authority;
 import ru.skypro.homework.model.Users;
+import ru.skypro.homework.repositories.AuthorityRepository;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.UserService;
 
@@ -30,17 +29,20 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
     private final UsersMapper usersMapper;
-
-    private final UserDetailsManager manager;
+//    private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
 
     public UserServiceImpl(UserRepository userRepository,
-                           UsersMapper usersMapper,
-                           UserDetailsManager manager) {
+                           AuthorityRepository authorityRepository,
+                           UsersMapper usersMapper){
+                           //UserDetailsManager manager)
+
         this.userRepository = userRepository;
+        this.authorityRepository = authorityRepository;
         this.usersMapper = usersMapper;
-        this.manager = manager;
+//        this.manager = manager;
         this.encoder = new BCryptPasswordEncoder();
     }
 
@@ -117,9 +119,9 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<NewPasswordDto> setPassword(NewPasswordDto newPasswordDto) {
         LOGGER.info("Was invoked method for set new password of user.");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = manager.loadUserByUsername(authentication.getName());
+//        UserDetails userDetails = manager.loadUserByUsername(authentication.getName());
         Users user = userRepository.findByUsername(authentication.getName());
-        String encryptedPassword = userDetails.getPassword();
+        String encryptedPassword = user.getPassword();
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
         if (encoder.matches(newPasswordDto.getCurrentPassword(),
                 encryptedPasswordWithoutEncryptionType)) {
@@ -134,7 +136,6 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Was invoked method for set ADMIN.");
         if (userRepository.findByRole(Role.ADMIN) == null) {
             Users admin = new Users();
-            admin.setId(4L);
             admin.setFirstName("Администратор");
             admin.setLastName("Интернет-магазина");
             admin.setPhone("+7(812)777-55-33");
@@ -143,6 +144,11 @@ public class UserServiceImpl implements UserService {
             admin.setRole(Role.ADMIN);
             admin.setEnabled(true);
             userRepository.save(admin);
+
+            Authority authority = new Authority();
+            authority.setUsername("admin@mail.ru");
+            authority.setAuthority("ROLE_ADMIN");
+            authorityRepository.save(authority);
         }
     }
 }
