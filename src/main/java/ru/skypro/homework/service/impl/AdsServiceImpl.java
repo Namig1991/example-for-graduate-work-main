@@ -39,7 +39,6 @@ public class AdsServiceImpl implements AdsService {
     private final ImageService imageService;
     private final CommentRepository commentRepository;
     private final AdsMapper adsMapper;
-    private final UserService userService;
 
     public AdsServiceImpl(AdsRepository adsRepository,
                           UserRepository userRepository,
@@ -51,7 +50,6 @@ public class AdsServiceImpl implements AdsService {
         this.imageService = imageService;
         this.commentRepository = commentRepository;
         this.adsMapper = adsMapper;
-        this.userService = userService;
     }
 
     /**
@@ -61,11 +59,11 @@ public class AdsServiceImpl implements AdsService {
      * @param file   - изображение к объявлению.
      */
     @Override
-    public ResponseEntity<AdsDto> saveAds(CreateAdsDto adsDto, MultipartFile file)
+    public ResponseEntity<AdsDto> saveAds(CreateAdsDto adsDto, MultipartFile file,
+                                          Authentication authentication)
             throws IOException {
         LOGGER.info("Was invoked method for save Ads.");
         Ads newAds = adsMapper.createAdsDtoToAds(adsDto);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users author = userRepository.findByUsername(authentication.getName());
         newAds.setUsers(author);
         Ads intermediateSavedAds = adsRepository.save(newAds);
@@ -84,7 +82,6 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseEntity<ResponseWrapperAdsDto> getAllAds() {
         LOGGER.info("Was invoked method for get all Ads.");
-        userService.setAdminInUsers();
         List<Ads> adsList = adsRepository.findAll();
         List<AdsDto> adsDtoList = adsMapper.listAdsToListAdsDto(adsList);
         for (int i = 0; i < adsDtoList.size(); i++) {

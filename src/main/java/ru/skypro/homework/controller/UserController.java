@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,6 @@ import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.ResponseWrapperUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.model.Avatar;
-import ru.skypro.homework.model.Images;
 import ru.skypro.homework.model.Users;
 import ru.skypro.homework.service.AvatarService;
 import ru.skypro.homework.service.UserService;
@@ -29,10 +27,6 @@ import ru.skypro.homework.service.UserService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 
 @Slf4j
@@ -143,17 +137,17 @@ public class UserController {
         LOGGER.info("Was invoked method of UserController for update avatar of user.");
         Users user = userService.findByUsername(authentication.getName());
         Avatar avatar = avatarService.uploadAvatar(user.getId(), file);
-        Path path = Path.of(avatar.getFilePath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(avatar.getMediaType());
-            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
-            is.transferTo(os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        Path path = Path.of(avatar.getFilePath());
+//        try (
+//                InputStream is = Files.newInputStream(path);
+//                OutputStream os = response.getOutputStream()
+//        ) {
+//            response.setStatus(200);
+//            response.setContentType(avatar.getMediaType());
+//            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
+//            is.transferTo(os);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

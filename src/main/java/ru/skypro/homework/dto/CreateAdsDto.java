@@ -1,7 +1,9 @@
 package ru.skypro.homework.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 @Data
+@AllArgsConstructor
 public class CreateAdsDto {
   private String description;
   private String image;

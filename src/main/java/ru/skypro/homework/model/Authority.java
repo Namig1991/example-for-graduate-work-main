@@ -1,12 +1,14 @@
 package ru.skypro.homework.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table (name = "authorities")
 public class Authority {
 

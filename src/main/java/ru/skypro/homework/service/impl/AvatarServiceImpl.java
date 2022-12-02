@@ -33,6 +33,7 @@ public class AvatarServiceImpl implements AvatarService {
     private String avatarDir;
     private final AvatarRepository avatarRepository;
     private final UserRepository userRepository;
+    private static final String END_POINT_FOR_AVATAR = "/getAvatar/";
 
     public AvatarServiceImpl(AvatarRepository avatarRepository, UserRepository userRepository) {
         this.avatarRepository = avatarRepository;
@@ -68,11 +69,25 @@ public class AvatarServiceImpl implements AvatarService {
             avatar.setFilePath(filePath.toString());
             avatar.setMediaType(Objects.requireNonNull(file.getContentType()));
             avatar.setFileSize(file.getSize());
+            avatar.setData(file.getBytes());
+            Avatar savedAvatar = avatarRepository.save(avatar);
             user.setAvatar(avatar);
+            user.setImage(END_POINT_FOR_AVATAR + savedAvatar.getId());
             userRepository.save(user);
-            return avatarRepository.save(avatar);
+            return savedAvatar;
         }
         return null;
+    }
+
+    /**
+     * Получение аватара по его идентификатору.
+     * @param avatarId - идентификатор аватара.
+     * @return - найденный аватар.
+     */
+    @Override
+    public Avatar getAvatarById(Long avatarId) {
+        LOGGER.info("Was invoked method for get avatar by id.");
+        return avatarRepository.findById(avatarId).orElseThrow();
     }
 
     /**

@@ -12,8 +12,8 @@ import ru.skypro.homework.model.Ads;
 import java.io.IOException;
 
 public interface AdsService {
-    ResponseEntity<AdsDto> saveAds(CreateAdsDto createAdsDto, MultipartFile file)
-            throws IOException;
+    ResponseEntity<AdsDto> saveAds(CreateAdsDto createAdsDto, MultipartFile file,
+                                   Authentication authentication) throws IOException;
     ResponseEntity<ResponseWrapperAdsDto> getAllAds();
     ResponseEntity<AdsDto> removeAdsById(Long adsId);
     ResponseEntity<FullAdsDto> getAdsById(Long adsId);

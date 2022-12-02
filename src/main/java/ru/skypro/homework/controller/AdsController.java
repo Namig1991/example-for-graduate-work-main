@@ -18,18 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.model.Comment;
-import ru.skypro.homework.model.Images;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.ImageService;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -89,9 +82,10 @@ public class AdsController {
                                          @Parameter(description = "Передаем заполненное объявление")
                                          @RequestPart("properties") CreateAdsDto createAdsDto,
                                          @Parameter(description = "Передаем изображение к объявлению")
-                                         @RequestPart("image") MultipartFile file) throws IOException {
+                                         @RequestPart("image") MultipartFile file,
+                                         Authentication authentication) throws IOException {
         LOGGER.info("Was invoked method of AdsController for save Ads.");
-        return adsService.saveAds(createAdsDto, file);
+        return adsService.saveAds(createAdsDto, file, authentication);
     }
 
     /**
@@ -110,7 +104,7 @@ public class AdsController {
             }
     )
     @PreAuthorize("@adsServiceImpl.getAdsById(#id).getBody().getEmail()" +
-            "== authentication.principal.username or hasRole('ROLE_ADMIN')")
+            "== authentication.principal.username or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<AdsDto> removeAds(
             @Parameter(description = "Передает ID для удаления")
@@ -207,7 +201,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
-    @GetMapping("/{adsPk}/comment")
+    @GetMapping("/{adsPk}/comments")
     public ResponseEntity<ResponseWrapperAdsCommentDto> getAllCommentsOfAds(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk) {
@@ -230,7 +224,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    @PostMapping("/{adsPk}/comment")
+    @PostMapping("/{adsPk}/comments")
     public ResponseEntity<AdsCommentDto> addAdsComment(
             @Parameter(description = "Передаем заполненный комментарий")
             @RequestBody AdsCommentDto adsCommentDto,
@@ -256,7 +250,7 @@ public class AdsController {
             })
     @PreAuthorize("@userServiceImpl.getUser(@commentServiceImpl.getAdsComment(#id).getBody()" +
             ".getAuthor()).body.email == authentication.principal.username or hasRole('ROLE_ADMIN')")
-    @PatchMapping("/{adsPk}/comment/{id}")
+    @PatchMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<AdsCommentDto> updateAdsComment(
             @PathVariable Integer adsPk,
             @PathVariable Integer id,
@@ -276,7 +270,7 @@ public class AdsController {
             })
     @PreAuthorize("@userServiceImpl.getUser(@commentServiceImpl.getAdsComment(#id).getBody()" +
             ".getAuthor()).body.email == authentication.principal.username or hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{adsPk}/comment/{id}")
+    @DeleteMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<Void> deleteAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk,
@@ -304,7 +298,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "403", description = "Forbidden"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    @GetMapping("/{adsPk}/comment/{id}")
+    @GetMapping("/{adsPk}/comments/{id}")
     public ResponseEntity<AdsCommentDto> getAdsComment(
             @Parameter(description = "Передаем первичный ключ обявления")
             @PathVariable Integer adsPk,
