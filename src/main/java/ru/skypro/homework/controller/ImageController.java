@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.model.Images;
@@ -62,21 +66,25 @@ public class ImageController {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    @GetMapping(value = "/getAvatar/{avatarId}")
-    public void getAvatar(@PathVariable Long avatarId, HttpServletResponse response) {
+    @GetMapping(value = "/getAvatar/{avatarId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getAvatar(@PathVariable Long avatarId, HttpServletResponse response) {
         LOGGER.info("Was invoked method of ImageController for get avatar of user.");
         Avatar avatar = avatarService.getAvatarById(avatarId);
-        Path path = Path.of(avatar.getFilePath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(avatar.getMediaType());
-            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
-            is.transferTo(os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+//        Path path = Path.of(avatar.getFilePath());
+//        try (
+//                InputStream is = Files.newInputStream(path);
+//                OutputStream os = response.getOutputStream()
+//        ) {
+//            response.setStatus(200);
+//            response.setContentType(avatar.getMediaType());
+//            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
+//            is.transferTo(os);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

@@ -18,18 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.model.Comment;
-import ru.skypro.homework.model.Images;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.ImageService;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -89,9 +82,10 @@ public class AdsController {
                                          @Parameter(description = "Передаем заполненное объявление")
                                          @RequestPart("properties") CreateAdsDto createAdsDto,
                                          @Parameter(description = "Передаем изображение к объявлению")
-                                         @RequestPart("image") MultipartFile file) throws IOException {
+                                         @RequestPart("image") MultipartFile file,
+                                         Authentication authentication) throws IOException {
         LOGGER.info("Was invoked method of AdsController for save Ads.");
-        return adsService.saveAds(createAdsDto, file);
+        return adsService.saveAds(createAdsDto, file, authentication);
     }
 
     /**

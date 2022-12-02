@@ -21,6 +21,9 @@ public class Avatar {
     @NonNull
     private Long fileSize;
 
+    @Lob
+    private byte[] data;
+
     @OneToOne
     @JoinColumn(name = "users_id")
     private Users users;

@@ -31,18 +31,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final UsersMapper usersMapper;
-//    private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            AuthorityRepository authorityRepository,
                            UsersMapper usersMapper){
-                           //UserDetailsManager manager)
 
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.usersMapper = usersMapper;
-//        this.manager = manager;
         this.encoder = new BCryptPasswordEncoder();
     }
 
@@ -119,7 +116,6 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<NewPasswordDto> setPassword(NewPasswordDto newPasswordDto) {
         LOGGER.info("Was invoked method for set new password of user.");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserDetails userDetails = manager.loadUserByUsername(authentication.getName());
         Users user = userRepository.findByUsername(authentication.getName());
         String encryptedPassword = user.getPassword();
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
